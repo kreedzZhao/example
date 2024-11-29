@@ -25,6 +25,8 @@ class ModuleMain(base: XposedInterface, param: ModuleLoadedParam) : XposedModule
         module = this
     }
 
+
+
     @XposedHooker
     class MyHooker(private val magic: Int) : XposedInterface.Hooker {
         companion object {
@@ -55,6 +57,12 @@ class ModuleMain(base: XposedInterface, param: ModuleLoadedParam) : XposedModule
         log("----------")
 
         if (!param.isFirstPackage) return
+
+        try {
+            System.loadLibrary("hooktest")
+        }catch (e: UnsatisfiedLinkError) {
+            log("Failed to load native library: " + e.message, e)
+        }
 
         val prefs = getRemotePreferences("test")
         log("remote prefs: " + prefs.getInt("test", -1))

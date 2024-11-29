@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:multiArch="true"
+        android:extractNativeLibs="false"
         android:description="@android:string/unknownName"
         android:label="Xposed Example"
         android:theme="@android:style/Theme.DeviceDefault"

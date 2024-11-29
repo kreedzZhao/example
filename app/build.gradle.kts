@@ -13,6 +13,12 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags += "-std=c++20"
+            }
+        }
     }
 
     buildTypes {
@@ -35,6 +41,13 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
 
     packaging {
