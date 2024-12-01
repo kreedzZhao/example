@@ -54,7 +54,6 @@ class ModuleMain(base: XposedInterface, param: ModuleLoadedParam) : XposedModule
         log("onPackageLoaded: " + param.packageName)
         log("param classloader is " + param.classLoader)
         log("module apk path: " + this.applicationInfo.sourceDir)
-        log("----------")
 
         if (!param.isFirstPackage) return
 

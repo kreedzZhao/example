@@ -19,8 +19,9 @@ FILE *(*backup_fopen)(const char *filename, const char *mode);
 
 FILE *fake_fopen(const char *filename, const char *mode) {
     if (strstr(filename, "banned")) return nullptr;
-    __android_log_print(ANDROID_LOG_INFO, "LSPosedContext", "fopen: %s", filename);
-    return backup_fopen(filename, mode);
+    auto res = backup_fopen(filename, mode);
+    __android_log_print(ANDROID_LOG_INFO, "LSPosedContext", "fopen: %s -> res: %p", filename, res);
+    return res;
 }
 
 jclass (*backup_FindClass)(JNIEnv *env, const char *name);
