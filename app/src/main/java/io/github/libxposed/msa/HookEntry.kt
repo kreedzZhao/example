@@ -1,9 +1,9 @@
 package io.github.libxposed.msa
 
+import android.R.attr.classLoader
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.google.gson.Gson
 import io.github.libxposed.api.XposedInterface
 import io.github.libxposed.api.XposedInterface.Hooker
 import io.github.libxposed.api.XposedModuleInterface
@@ -48,6 +48,25 @@ class HookEntry(base: XposedInterface, param: ModuleLoadedParam) : KreModule(bas
             // okhttp3.Request
 //            val requestClass = Class.forName("okhttp3.Request", false, param.classLoader)
 //            hookAllConstructors(DefaultHooker::class.java, requestClass)
+
+//            val aClass = Class.forName("H8.a", false, param.classLoader)
+//            hookAllConstructors(DefaultHooker::class.java, aClass)
+//            // f8.m
+//            val mClass = Class.forName("f8.m", false, param.classLoader)
+//            hookAllConstructors(DefaultHooker::class.java, mClass)
+//            // H8.PlayIntegrityAppCheckProvider 直接查找接口的交叉引用
+//            // B7.C0646m.c
+//            val cClass = Class.forName("B7.m", false, param.classLoader)
+//            hookMethod(DefaultHooker::class.java, cClass, "c", Exception::class.java)
+
+            // D8.b
+            val bClass = Class.forName("D8.b", false, param.classLoader)
+//            hookConstructor(DefaultHooker::class.java, bClass, Long::class.java,
+//                Long::class.java,
+//                String::class.java)
+
+            hookAllConstructors(DefaultHooker::class.java, bClass)
+
         } catch (e: NoSuchMethodException) {
             log("NoSuchMethodException: ${e.message}")
         } catch (e: ClassNotFoundException) {
@@ -65,7 +84,8 @@ class HookEntry(base: XposedInterface, param: ModuleLoadedParam) : KreModule(bas
             fun beforeInvocation(callback: XposedInterface.BeforeHookCallback): InterceptHooker {
                 val chain = callback.args[0]
                 val request = chain::class.java.getDeclaredMethod("request").invoke(chain)
-                module.log("beforeInvocation: $request")
+//                module.log("beforeInvocation: $request")
+                module.log("beforeInvocation")
                 // okhttp3.Request
                 val requestClass =
                     Class.forName("okhttp3.Request", false, chain::class.java.classLoader)
@@ -93,7 +113,10 @@ class HookEntry(base: XposedInterface, param: ModuleLoadedParam) : KreModule(bas
             @JvmStatic
             @BeforeInvocation
             fun beforeInvocation(callback: XposedInterface.BeforeHookCallback): DefaultHooker {
-                module.log("Default beforeInvocation")
+//                module.log("Default beforeInvocation arg0: ${callback.args[0].javaClass.name} -> ${callback.args[0]}", Throwable())
+                module.log("Default beforeInvocation arg0: ${callback.args[0]}")
+                module.log("Default beforeInvocation arg1: ${callback.args[1]}")
+                module.log("Default beforeInvocation arg2: ${callback.args[2]}", Throwable())
                 return DefaultHooker(0)
             }
 
@@ -103,7 +126,7 @@ class HookEntry(base: XposedInterface, param: ModuleLoadedParam) : KreModule(bas
                 callback: XposedInterface.AfterHookCallback,
                 context: DefaultHooker
             ) {
-                module.log("Default afterInvocation: ${Gson().toJson(callback.thisObject)}")
+                module.log("Default afterInvocation")
             }
         }
     }

@@ -20,7 +20,7 @@ FILE *(*backup_fopen)(const char *filename, const char *mode);
 FILE *fake_fopen(const char *filename, const char *mode) {
     if (strstr(filename, "banned")) return nullptr;
     auto res = backup_fopen(filename, mode);
-    __android_log_print(ANDROID_LOG_INFO, "LSPosedContext", "fopen: %s -> res: %p", filename, res);
+//    __android_log_print(ANDROID_LOG_INFO, "LSPosedContext", "fopen: %s -> res: %p", filename, res);
     return res;
 }
 

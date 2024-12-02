@@ -55,6 +55,8 @@ class MainActivity : Activity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Toast.makeText(this@MainActivity, "This is 3th version", Toast.LENGTH_SHORT).show()
+
         binding.binder.text = "Loading"
         XposedServiceHelper.registerListener(object : XposedServiceHelper.OnServiceListener {
             override fun onServiceBind(service: XposedService) {
