@@ -12,6 +12,7 @@ import io.github.libxposed.api.annotations.AfterInvocation
 import io.github.libxposed.api.annotations.BeforeInvocation
 import io.github.libxposed.api.annotations.XposedHooker
 import io.github.libxposed.utils.KreModule
+import java.net.URL
 
 
 private lateinit var module: HookEntry
@@ -61,11 +62,14 @@ class HookEntry(base: XposedInterface, param: ModuleLoadedParam) : KreModule(bas
 
             // D8.b
             val bClass = Class.forName("D8.b", false, param.classLoader)
-//            hookConstructor(DefaultHooker::class.java, bClass, Long::class.java,
-//                Long::class.java,
-//                String::class.java)
-
             hookAllConstructors(DefaultHooker::class.java, bClass)
+
+            // D8.i
+            val iClass = Class.forName("D8.i", false, param.classLoader)
+            val jClass = Class.forName("D8.j", false, param.classLoader)
+            hookMethod(QueryHooker::class.java, iClass, "c", URL::class.java, ByteArray::class.java, jClass, Boolean::class.java)
+            // n8.i onTransact 通过 binder 发送数据
+            // 所以需要到
 
         } catch (e: NoSuchMethodException) {
             log("NoSuchMethodException: ${e.message}")
@@ -73,6 +77,31 @@ class HookEntry(base: XposedInterface, param: ModuleLoadedParam) : KreModule(bas
             log("ClassNotFoundException: ${e.message}")
         }
         log("----------")
+    }
+
+
+    @XposedHooker
+    class QueryHooker(private val magic: Int) : Hooker {
+        companion object {
+            @JvmStatic
+            @BeforeInvocation
+            fun beforeInvocation(callback: XposedInterface.BeforeHookCallback): QueryHooker {
+                module.log("Default beforeInvocation url: ${callback.args[0]}")
+                val bytes = callback.args[1] as ByteArray
+                module.log("Default beforeInvocation byteArr: ${String(bytes)}")
+                module.log("Default beforeInvocation arg3: ${callback.args[2]}", Throwable())
+                return QueryHooker(0)
+            }
+
+            @JvmStatic
+            @AfterInvocation
+            fun afterInvocation(
+                callback: XposedInterface.AfterHookCallback,
+                context: QueryHooker
+            ) {
+                module.log("Default afterInvocation")
+            }
+        }
     }
 
 
